@@ -1,5 +1,7 @@
 package ecommerce.ma.appecommerce.controller;
 
+import ecommerce.ma.appecommerce.exception.NotValidDataException;
+import ecommerce.ma.appecommerce.exception.RequiredDataException;
 import ecommerce.ma.appecommerce.model.CommandeRequest;
 import ecommerce.ma.appecommerce.model.entity.Commande;
 import ecommerce.ma.appecommerce.service.CommandeServiceImpl;
@@ -27,6 +29,10 @@ public class CommandeController {
             return ResponseEntity.ok(commande);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (RequiredDataException e) {
+            throw new RuntimeException(e);
+        } catch (NotValidDataException e) {
+            throw new RuntimeException(e);
         }
     }
 }

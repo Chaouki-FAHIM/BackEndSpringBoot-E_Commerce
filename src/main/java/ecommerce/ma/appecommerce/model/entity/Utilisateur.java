@@ -45,7 +45,4 @@ public class Utilisateur {
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreation;
 
-    public Utilisateur(Utilisateur user) {
-        this.id= user.getId();
-    }
 }

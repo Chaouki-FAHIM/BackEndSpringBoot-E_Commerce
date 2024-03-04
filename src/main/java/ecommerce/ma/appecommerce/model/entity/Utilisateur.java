@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.lang.annotation.ElementType;
 import java.util.Date;
@@ -43,4 +44,8 @@ public class Utilisateur {
     @Column(name = "date_creation")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateCreation;
+
+    public Utilisateur(Utilisateur user) {
+        this.id= user.getId();
+    }
 }

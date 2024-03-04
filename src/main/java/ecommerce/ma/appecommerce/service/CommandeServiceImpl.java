@@ -26,7 +26,7 @@ public class CommandeServiceImpl implements IService<CommandeRequest,Commande,Lo
     @Autowired
     private LigneCommandeRepository ligneCommandeRepository;
     @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private UtilisateurRepository userRepository;
     @Autowired
     private ProduitRepository produitRepository;
 
@@ -47,7 +47,7 @@ public class CommandeServiceImpl implements IService<CommandeRequest,Commande,Lo
         long utilisateurId = commandeRequest.getUtilisateurId();
         List<LigneCommandeRequest> ligneCommandeRequests = commandeRequest.getProduits();
 
-        Utilisateur utilisateur = utilisateurRepository.findById(utilisateurId)
+        Utilisateur utilisateur = userRepository.findById(utilisateurId)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé avec l'id " + utilisateurId));
 
         Commande commande = new Commande();

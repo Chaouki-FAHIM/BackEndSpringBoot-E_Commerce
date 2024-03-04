@@ -51,7 +51,8 @@ public class AppecommerceApplication {
 					.image("https://ma.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/02/178885/1.jpg?1269")
 					.prix(100.0)
 					.date(new Date())
-					.build());
+					.build()
+			);
 			produitRepository.save(
 					Produit.builder()
 					.libelle("Chemise professionnelle d'été")
@@ -59,7 +60,8 @@ public class AppecommerceApplication {
 					.image("https://img.freepik.com/photos-gratuite/tas-jeans-tordus-gros-plan-vetements-mode_169016-4773.jpg?w=1380&t=st=1708554366~exp=1708554966~hmac=c1691f88b25973b895afd71c06de82fb97d7b1727dd5ec52f3aa251787510db3")
 					.prix(200.0)
 					.date(new Date())
-					.build());
+					.build()
+			);
 
 			// Initialize users
 			utilisateurRepository.save(

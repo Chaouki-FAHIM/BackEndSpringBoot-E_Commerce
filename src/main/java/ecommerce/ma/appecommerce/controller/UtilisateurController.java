@@ -3,8 +3,8 @@
     import ecommerce.ma.appecommerce.DTO.request.LoginRequestDTO;
     import ecommerce.ma.appecommerce.DTO.request.UtilisateurRequestDTO;
     import ecommerce.ma.appecommerce.DTO.response.LoginResponseDTO;
-    import ecommerce.ma.appecommerce.model.entity.Utilisateur;
-    import ecommerce.ma.appecommerce.repository.UtilisateurRepository;
+    import ecommerce.ma.appecommerce.DTO.response.UtilisateurResponseDTO;
+    import ecommerce.ma.appecommerce.exception.*;
     import ecommerce.ma.appecommerce.service.UtilisateurService;
     import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,61 +20,81 @@
         @Autowired
         private UtilisateurService userService;
 
-        @Autowired
-        private UtilisateurRepository utilisateurRepository;
-
         @PostMapping("/utilisateur")
-        Utilisateur newUtilisateur(@RequestBody Utilisateur newUser){
-            return utilisateurRepository.save(newUser);
+        ResponseEntity<?> newUtilisateur(@RequestBody UtilisateurRequestDTO newUserReqDTO){
+
+            try {
+                UtilisateurResponseDTO userResDTO = userService.add(newUserReqDTO);
+                return ResponseEntity.ok(userResDTO);
+            } catch (RequiredDataException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Données maquantes dans la création d'utilisatreur");
+            } catch (NotValidDataException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email et/ou mot de passe dans la création sont invalides d'utilisatreur");
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
         }
 
         @GetMapping("/utilisateurs")
-        List<Utilisateur> showAllutilisateurs(){
-            return utilisateurRepository.findAll();
+        ResponseEntity<?> showAllUsers(){
+            List<UtilisateurResponseDTO>  usersResDTO = userService.fetchAll();
+            return ResponseEntity.ok(
+                    usersResDTO
+            );
         }
 
-
         @GetMapping("/utilisateur/{id}")
-        Utilisateur getUtilisateurById(@PathVariable Long id) {
-            return utilisateurRepository.findById(id).orElse(null);
+        ResponseEntity<?> getUserById(@PathVariable Long id) throws NotFoundException {
+            UtilisateurResponseDTO userResDTO = userService.searcheByID(id);
+            if (userResDTO == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur est non-trouvé par l'identifinant "+id);
+            return ResponseEntity.ok(
+                    userResDTO
+            );
         }
 
         @PutMapping("/utilisateur/{id}")
-        Utilisateur updateUtilisateur(@RequestBody Utilisateur newUtilisateur, @PathVariable Long id) {
-            return utilisateurRepository.findById(id)
-                    .map(user -> {
-                        user.setPrenom(newUtilisateur.getPrenom());
-                        user.setNom(newUtilisateur.getNom());
-                        user.setPasswd(newUtilisateur.getPasswd());
-                        user.setEmail(newUtilisateur.getEmail());
-                        user.setAdress(newUtilisateur.getAdress());
-                        user.setRole(newUtilisateur.getRole());
-
-                        return utilisateurRepository.save(user);
-                    })
-                    .orElseGet(() -> {
-                        newUtilisateur.setId(id);
-                        return utilisateurRepository.save(newUtilisateur);
-                    });
+        ResponseEntity<?> updateUser(@RequestBody UtilisateurRequestDTO newUserReqDTO, @PathVariable Long id) throws RequiredDataException, NotValidDataException, NotFoundException {
+            try {
+                UtilisateurResponseDTO userResDTO = userService.update(newUserReqDTO,id);
+                return ResponseEntity.ok(userResDTO);
+            } catch (NotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur est non-trouvé par l'identifiant "+id);
+            } catch (RequiredDataException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Données maquantes dans le mise à jour d'utilisatreur");
+            } catch (NotValidDataException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email et/ou mot de passe sont invalides d'utilisatreur");
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
         }
 
         @DeleteMapping("/utilisateur/{id}")
-        String deleteUtilisateur(@PathVariable Long id){
-            utilisateurRepository.deleteById(id);
-            return "Suppression avec succès pour cet utilisateur : " + id;
+        ResponseEntity<String> deleteUser(@PathVariable Long id){
+            try {
+                UtilisateurResponseDTO userResDTO = userService.delete(id);
+                return ResponseEntity.ok("Suppression d'utilisateur avec succès");
+            } catch (NotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur est non-trouvé par l'identifiant "+id);
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            }
         }
 
         @PostMapping("/login")
-        LoginResponseDTO login(@RequestBody LoginRequestDTO loginDTO) {
-            return userService.login(loginDTO);
+        ResponseEntity<?> login(@RequestBody LoginRequestDTO loginDTO) throws UserNotFoundException {
+            LoginResponseDTO loginResDTO = userService.login(loginDTO);
+            if (loginResDTO == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email et/ou mot de passe dans l'inscription sont invalides");
+            return ResponseEntity.ok(
+                    loginResDTO
+            );
         }
 
         @PostMapping("/register")
-        ResponseEntity<?> register(@RequestBody UtilisateurRequestDTO utilisateurRequestDTO) {
-            Object object = userService.register(utilisateurRequestDTO);
-            if (object == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("L'email ou mot de passe invalide");
+        ResponseEntity<?> register(@RequestBody UtilisateurRequestDTO utilisateurRequestDTO) throws UserCreationException {
+            UtilisateurResponseDTO userResDTO = userService.register(utilisateurRequestDTO);
+            if (userResDTO == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email et/ou mot de passe dans l'inscription sont invalides");
             return ResponseEntity.ok(
-                    object
+                    userResDTO
             );
         }
     }

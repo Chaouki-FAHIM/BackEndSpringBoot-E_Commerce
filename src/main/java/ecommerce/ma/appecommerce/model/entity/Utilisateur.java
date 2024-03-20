@@ -28,6 +28,9 @@ public class Utilisateur {
     @Column(name="prenom")
     private String prenom;
 
+    @Column(name="username")
+    private String username;
+
     @Column(name="adresse")
     private String adress;
 
@@ -35,7 +38,7 @@ public class Utilisateur {
     private String email;
 
     @Column(name="mot_passe")
-    private String passwd;
+    private String password;
 
     @Column(name="role")
     @Enumerated(EnumType.STRING)

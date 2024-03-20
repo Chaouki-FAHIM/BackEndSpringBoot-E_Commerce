@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginResponseDTO {
     private Long id;
-    private String email;
-    private String passwd;
+    private String username;
+    private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
 }

@@ -10,9 +10,12 @@
 
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
+
+    import org.springframework.security.access.prepost.PreAuthorize;
     import org.springframework.web.bind.annotation.*;
 
     import java.util.List;
+
     @CrossOrigin("http://localhost:3000")
     @RestController
     public class UtilisateurController {
@@ -20,7 +23,9 @@
         @Autowired
         private UtilisateurService userService;
 
-        @PostMapping("/utilisateur")
+
+        @PostMapping("/utilisateurs")
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
         ResponseEntity<?> newUtilisateur(@RequestBody UtilisateurRequestDTO newUserReqDTO){
 
             try {
@@ -31,28 +36,40 @@
             } catch (NotValidDataException e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email et/ou mot de passe dans la création sont invalides d'utilisatreur");
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
 
         @GetMapping("/utilisateurs")
-        ResponseEntity<?> showAllUsers(){
-            List<UtilisateurResponseDTO>  usersResDTO = userService.fetchAll();
-            return ResponseEntity.ok(
-                    usersResDTO
-            );
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
+        ResponseEntity<?> showAllUsers() {
+            try {
+                List<UtilisateurResponseDTO> usersResDTO = userService.fetchAll();
+                return ResponseEntity.ok(
+                        usersResDTO
+                );
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            }
         }
 
-        @GetMapping("/utilisateur/{id}")
+        @GetMapping("/utilisateurs/{id}")
+        @PreAuthorize("hasAuthority('SCOPE_USER')")
         ResponseEntity<?> getUserById(@PathVariable Long id) throws NotFoundException {
-            UtilisateurResponseDTO userResDTO = userService.searcheByID(id);
-            if (userResDTO == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur est non-trouvé par l'identifinant "+id);
-            return ResponseEntity.ok(
-                    userResDTO
-            );
+            try {
+                UtilisateurResponseDTO userResDTO = userService.searcheByID(id);
+                return ResponseEntity.ok(
+                        userResDTO
+                );
+            } catch (NotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            }
         }
 
-        @PutMapping("/utilisateur/{id}")
+        @PutMapping("/utilisateurs/{id}")
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
         ResponseEntity<?> updateUser(@RequestBody UtilisateurRequestDTO newUserReqDTO, @PathVariable Long id) throws RequiredDataException, NotValidDataException, NotFoundException {
             try {
                 UtilisateurResponseDTO userResDTO = userService.update(newUserReqDTO,id);
@@ -64,11 +81,12 @@
             } catch (NotValidDataException e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email et/ou mot de passe sont invalides d'utilisatreur");
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
 
-        @DeleteMapping("/utilisateur/{id}")
+        @DeleteMapping("/utilisateurs/{id}")
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
         ResponseEntity<String> deleteUser(@PathVariable Long id){
             try {
                 UtilisateurResponseDTO userResDTO = userService.delete(id);
@@ -76,7 +94,7 @@
             } catch (NotFoundException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur est non-trouvé par l'identifiant "+id);
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
             }
         }
 

@@ -11,6 +11,6 @@ public interface IService<RequestDTO,ResponseDTO,ID> {
     ResponseDTO searcheByID(ID id) throws NotFoundException;
     ResponseDTO add(RequestDTO requestDTO) throws RequiredDataException, NotValidDataException;
     ResponseDTO update(RequestDTO requestDTO,ID id) throws NotFoundException, RequiredDataException, NotValidDataException;
-    ResponseDTO delete(ID id) throws NotFoundException;
+    void delete(ID id) throws NotFoundException;
 
 }

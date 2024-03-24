@@ -23,7 +23,7 @@ public class UtilisateurMapper {
                 .nom(utilisateurRequestDTO.getNom())
                 .prenom(utilisateurRequestDTO.getPrenom())
                 .username(utilisateurRequestDTO.getUsername())
-                .adress(utilisateurRequestDTO.getAdresse())
+                .adresse(utilisateurRequestDTO.getAdresse())
                 .role(utilisateurRequestDTO.getRole())
                 .email(utilisateurRequestDTO.getEmail())
                 .password(utilisateurRequestDTO.getPassword())

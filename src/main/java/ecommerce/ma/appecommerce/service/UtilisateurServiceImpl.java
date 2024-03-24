@@ -55,7 +55,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         Utilisateur exitingUsername = userRepository.findByUsername(newUser.getUsername());
         Utilisateur exitingUserPassword = userRepository.findByPassword(newUser.getPassword());
         if (exitingUsername != null || exitingUserPassword != null)
-            throw new NotValidDataException("Username et/ou mot de passe dans le création sont invalides d'utilisatreur");
+            throw new NotValidDataException("Username et/ou mot de passe dans le création d'utilisatreur sont invalides");
 
         // enregistrement les données d'entrées
         return userMapper.fromUserToRes(
@@ -77,13 +77,15 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         // validation l'adresse éléctronique et mot de passe
         Utilisateur exitingUsername = userRepository.findByUsername(newUser.getEmail());
         Utilisateur exitingUserPassword = userRepository.findByPassword(newUser.getPassword());
-        if (exitingUsername != null || exitingUserPassword != null)
+        if ((exitingUsername != null && !Objects.equals(exitingUsername.getId(), id))
+                || (exitingUserPassword != null && !Objects.equals(exitingUserPassword.getId(), id)))
             throw new NotValidDataException("Username et/ou mot de passe dans le mise à jour sont invalides d'utilisatreur d'id "+id+ " !!");
 
         // enregistrement les données d'entrées
         currentUser.setPrenom(newUser.getPrenom());
         currentUser.setNom(newUser.getNom());
-        currentUser.setAdress(newUser.getAdresse());
+        currentUser.setUsername(newUser.getUsername());
+        currentUser.setAdresse(newUser.getAdresse());
         currentUser.setEmail(newUser.getEmail());
         currentUser.setPassword(newUser.getPassword());
         currentUser.setRole(newUser.getRole());
@@ -94,14 +96,12 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
-    public UtilisateurResponseDTO delete(Long id) throws NotFoundException {
+    public void delete(Long id) throws NotFoundException {
         Optional<Utilisateur> userSearched = userRepository.findById(id);
         if(userSearched.isEmpty())
             throw new NotFoundException("Utilisateur est non-trouvé par l'identifiant "+id);
 
-        return userMapper.fromUserToRes(
-                userSearched.orElseThrow(() -> new IllegalStateException("La valeur n'est pas présente"))
-        );
+        userRepository.delete(userSearched.get());
     }
 
     @Override

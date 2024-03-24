@@ -42,7 +42,7 @@ public class SecurityController {
 
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(instant)
-                //.expiresAt(instant.plus(2, ChronoUnit.MINUTES))
+                .expiresAt(instant.plus(5, ChronoUnit.MINUTES))
                 .subject(loginDTO.getUsername())
                 .claim("scope", scope)
                 .build();

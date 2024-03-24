@@ -18,7 +18,7 @@ public class UtilisateurResponseDTO {
     private String nom;
     private String prenom;
     private String username;
-    private String adress;
+    private String adresse;
     private String email;
     private String password;
     private Role role;

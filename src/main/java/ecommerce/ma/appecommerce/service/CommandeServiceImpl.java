@@ -75,8 +75,8 @@ public class CommandeServiceImpl implements IService<CommandeRequest,Commande,Lo
     }
 
     @Override
-    public Commande delete(Long aLong) {
-        return null;
+    public void delete(Long aLong) {
+        return;
     }
 }
 

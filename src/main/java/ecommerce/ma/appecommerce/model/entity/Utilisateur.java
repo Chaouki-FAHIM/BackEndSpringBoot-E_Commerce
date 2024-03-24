@@ -32,7 +32,7 @@ public class Utilisateur {
     private String username;
 
     @Column(name="adresse")
-    private String adress;
+    private String adresse;
 
     @Column(name="email")
     private String email;

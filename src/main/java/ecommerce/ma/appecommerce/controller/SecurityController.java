@@ -36,15 +36,16 @@ public class SecurityController {
         );
 
         Instant instant = Instant.now();
-        String scope = authentication.getAuthorities().stream()
+        String roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
+        System.out.println("Roles: " + roles);
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuedAt(instant)
                 .expiresAt(instant.plus(5, ChronoUnit.MINUTES))
                 .subject(loginDTO.getUsername())
-                .claim("scope", scope)
+                .claim("scope", roles)
                 .build();
 
         JwtEncoderParameters jwtEncoderParameters =

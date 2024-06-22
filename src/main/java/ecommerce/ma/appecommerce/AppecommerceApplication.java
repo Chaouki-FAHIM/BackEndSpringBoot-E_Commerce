@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @SpringBootApplication
@@ -70,7 +71,7 @@ public class AppecommerceApplication {
 							.prenom("Johnson")
 							.username("admin")
 							.email("admin@gmail.com")
-							.role(Role.ADMIN)
+							.roles(Set.of(Role.USER,Role.ADMIN))
 							.adresse("456 Main Avenue")
 							.password(passwordEncoder.encode("123"))
 							.dateCreation(new Date())
@@ -83,7 +84,7 @@ public class AppecommerceApplication {
 							.prenom("Salma")
 							.username("user")
 							.email("user@gmail.com")
-							.role(Role.USER)
+							.roles(Set.of(Role.USER))
 							.adresse("Bd Mohammed 5 Opéra, Salé Tabriket")
 							.password(passwordEncoder.encode("password-salma"))
 							.dateCreation(new Date())
@@ -96,7 +97,7 @@ public class AppecommerceApplication {
 							.prenom("Smith")
 							.username("customer")
 							.email("customer@gmail.com")
-							.role(Role.CUSTOMER)
+							.roles(Set.of(Role.USER,Role.CUSTOMER))
 							.adresse("171 Bd Mohammed Zerktouni, Casablanca")
 							.password(passwordEncoder.encode("123"))
 							.dateCreation(new Date())

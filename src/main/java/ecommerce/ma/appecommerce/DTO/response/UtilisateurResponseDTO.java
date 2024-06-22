@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +22,6 @@ public class UtilisateurResponseDTO {
     private String adresse;
     private String email;
     private String password;
-    private Role role;
+    private Set<Role> roles;
     private Date dateCreation;
 }

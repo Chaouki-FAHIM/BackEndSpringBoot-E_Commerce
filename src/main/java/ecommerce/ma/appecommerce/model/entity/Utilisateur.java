@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.lang.annotation.ElementType;
 import java.util.Date;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,9 +41,11 @@ public class Utilisateur {
     @Column(name="mot_passe")
     private String password;
 
-    @Column(name="role")
+    @ElementCollection(targetClass = Role.class)
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<Role> roles;
 
     @Column(name = "date_creation")
     @Temporal(TemporalType.TIMESTAMP)

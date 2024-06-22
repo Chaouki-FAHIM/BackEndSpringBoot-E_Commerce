@@ -88,7 +88,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         currentUser.setAdresse(newUser.getAdresse());
         currentUser.setEmail(newUser.getEmail());
         currentUser.setPassword(newUser.getPassword());
-        currentUser.setRole(newUser.getRole());
+        currentUser.setRoles(newUser.getRoles());
 
         return userMapper.fromUserToRes(
                 userRepository.save(currentUser)
@@ -119,7 +119,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
                 .id(user.getId())
                 .username(user.getUsername())
                 .password(user.getPassword())
-                .role(user.getRole())
+                .roles(user.getRoles())
                 .build();
     }
 
@@ -132,7 +132,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         else {
              Utilisateur utilisateur = userMapper.fromReqToUser(utilisateurRequestDTO);
              utilisateur.setDateCreation(new Date());
-             utilisateur.setRole(Role.CUSTOMER);
+             utilisateur.setRoles(Set.of(Role.USER,Role.CUSTOMER));
             return userMapper.fromUserToRes(
                     userRepository.save(utilisateur)
             );

@@ -32,12 +32,13 @@ public class SecurityController {
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody LoginRequestDTO loginDTO) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(),loginDTO.getPassword())
+                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
         );
 
         Instant instant = Instant.now();
         String roles = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
+                .map(role -> "ROLE_" + role)
                 .collect(Collectors.joining(" "));
 
         System.out.println("Roles: " + roles);
@@ -57,5 +58,6 @@ public class SecurityController {
         String jwt = jwtEncoder.encode(jwtEncoderParameters).getTokenValue();
         return Map.of("access_token", jwt);
     }
+
 
 }

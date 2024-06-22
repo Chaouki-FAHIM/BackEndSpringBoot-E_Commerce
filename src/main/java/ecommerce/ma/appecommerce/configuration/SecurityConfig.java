@@ -44,8 +44,16 @@ public class SecurityConfig {
     @Bean
     public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        jdbcUserDetailsManager.setUsersByUsernameQuery("select username, mot_passe as password, true as enabled from Utilisateur where username = ?");
-        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery("select username, role from Utilisateur where username = ?");
+
+        jdbcUserDetailsManager.setUsersByUsernameQuery(
+                "select username, mot_passe as password, true as enabled from Utilisateur where username = ?"
+        );
+
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(
+                "select u.username, r.role from Utilisateur u join user_roles r on u.id = r.user_id " +
+                        "where u.username = ?"
+        );
+
         return jdbcUserDetailsManager;
     }
 

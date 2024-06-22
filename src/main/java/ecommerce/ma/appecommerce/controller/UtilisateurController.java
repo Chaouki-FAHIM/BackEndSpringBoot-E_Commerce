@@ -25,7 +25,7 @@
 
 
         @GetMapping("/utilisateurs")
-        @PreAuthorize("hasAuthority('SCOPE_USER')")
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_USER')")
         ResponseEntity<?> showAllUsers() {
             try {
                 List<UtilisateurResponseDTO> usersResDTO = userService.fetchAll();
@@ -38,7 +38,7 @@
         }
 
         @GetMapping("/utilisateurs/{id}")
-        @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_CUSTOMER')")
         ResponseEntity<?> getUserById(@PathVariable Long id) throws NotFoundException {
             try {
                 UtilisateurResponseDTO userResDTO = userService.searcheByID(id);
@@ -53,7 +53,7 @@
         }
 
         @PostMapping("/utilisateurs")
-        @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
         ResponseEntity<?> newUtilisateur(@RequestBody UtilisateurRequestDTO newUserReqDTO){
 
             try {
@@ -67,7 +67,7 @@
         }
 
         @PutMapping("/utilisateurs/{id}")
-        @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_CUSTOMER')")
         ResponseEntity<?> updateUser(@RequestBody UtilisateurRequestDTO newUserReqDTO, @PathVariable Long id) throws RequiredDataException, NotValidDataException, NotFoundException {
             try {
                 UtilisateurResponseDTO userResDTO = userService.update(newUserReqDTO,id);
@@ -84,7 +84,7 @@
         }
 
         @DeleteMapping("/utilisateurs/{id}")
-        @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+        @PreAuthorize("hasAuthority('SCOPE_ROLE_ADMIN')")
         ResponseEntity<String> deleteUser(@PathVariable Long id){
             try {
                 userService.delete(id);

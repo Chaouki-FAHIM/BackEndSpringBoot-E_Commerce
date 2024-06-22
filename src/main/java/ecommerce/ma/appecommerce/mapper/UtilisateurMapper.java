@@ -24,7 +24,7 @@ public class UtilisateurMapper {
                 .prenom(utilisateurRequestDTO.getPrenom())
                 .username(utilisateurRequestDTO.getUsername())
                 .adresse(utilisateurRequestDTO.getAdresse())
-                .role(utilisateurRequestDTO.getRole())
+                .roles(utilisateurRequestDTO.getRoles())
                 .email(utilisateurRequestDTO.getEmail())
                 .password(utilisateurRequestDTO.getPassword())
                 .build();
